@@ -129,7 +129,7 @@ int FillEmptyItem(char *szStr, int size, int itemIndex)
         Item *preFillItem = SearchPreUsedItem(thisFillItem);
         Item *thisEmptyItem = (Item*)malloc(sizeof(Item));
         thisEmptyItem->iSize = savedSize - size;
-        thisEmptyItem->iStrIndex = thisFillItem + size;
+        thisEmptyItem->iStrIndex = thisFillItem->iSize + size;
 
         //修改前后未用节点
         if (thisFillItem->next != NULL)
