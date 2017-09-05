@@ -1,4 +1,4 @@
 #pragma once
 
-int Initialize();
+int Initialize(char *szBuf, int size);
 int InsertItem(char *szStr);
