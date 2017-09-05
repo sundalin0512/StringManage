@@ -14,6 +14,7 @@
 //  位置大小对数量 = pEmptyList[0]
 //  位置 = pEmptyList[iIndex * 2 + 1]
 //  大小 = pEmptyList[iIndex * 2 + 2]
+char *pStrBuf;
 int *pSize;
 int *pFillList;
 int *pEmptyList;
@@ -21,6 +22,7 @@ int *pEmptyList;
 int Initialize(char *szBuf, int size)
 {
     pSize = (int*)szBuf;
+    pStrBuf = szBuf;
     *pSize = size;
     *(int*)&szBuf[4] = (int)&szBuf[12];
     *(int*)&szBuf[8] = (int)&szBuf[16];
@@ -75,6 +77,11 @@ int InsertFillList(int iPosition, int iSize)
         int *src = (int*)((int)pFillList + iCopyOffset);
         int iCount = ((pFillList[0] - iIndex) * 2 + 1 + pEmptyList[0] * 2 + 1) * sizeof(int);
         memmove_s(dest, iCount, src, iCount);
+        pFillList[0]++;
+        pFillList[iIndex * 2 + 1] = iPosition;
+        pFillList[iIndex * 2 + 2] = iSize;
+        pEmptyList += iMoveOffset / sizeof(int);
+        pStrBuf[8] = (int)pEmptyList;
     }
     else
     {
@@ -94,6 +101,10 @@ int AdjustArrayTail(int iSize)
         int *src = pFillList;
         int iCount = (pFillList[0] * 2 + 1 + pEmptyList[0] * 2 + 1) * sizeof(int);
         memmove_s(dest, iCount, src, iCount);
+        pFillList += iMoveOffset / sizeof(int);
+        pEmptyList += iMoveOffset/sizeof(int);
+        pStrBuf[4] = (int)pFillList;
+        pStrBuf[8] = (int)pEmptyList;
     }
     else
     {
@@ -104,14 +115,19 @@ int AdjustArrayTail(int iSize)
 
 int InsertEmptyPlace(int iIndex, char *szStr, int iSize)
 {
+    // TODO 写完删除回来再写
+    int iPosition = pEmptyList[iIndex * 2 + 1];
+    int iFillIndex = FindInsertIndex(iPosition);
 
 }
 
 int AttachToTail(char *szStr, int iSize)
 {
     int iPosition = 0; 
+    iPosition = (int)pFillList - (int)pSize;
     AdjustArrayTail(iSize);
     InsertFillList(iPosition, iSize);
+    memcpy_s(pStrBuf + iPosition, iSize,  szStr,  iSize);
     return 0;
 }
 
