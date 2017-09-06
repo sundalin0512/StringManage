@@ -216,7 +216,6 @@ int AdjustArrayTail(int iSize)
 
 int InsertEmptyPlace(int iEmptyPlaceIndex, char *szStr, int iSize, int iIndex)
 {
-    // TODO 写完删除回来再写
     int iPosition = pEmptyList[iEmptyPlaceIndex * 2 + 1];
     int iUsedSize = (iSize + sizeof(int) - 1) / sizeof(int) * sizeof(int);
     int iRemainSize = pEmptyList[iEmptyPlaceIndex * 2 + 2] - iUsedSize;
