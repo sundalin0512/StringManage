@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include "manage.h"
 
-int main(int argc, char* argv[])
+int main()
 { 
-    char szBuf[0x10000];
-    Initialize(szBuf, 0x10000);
+    char szBuf[0x100];
+    Initialize(szBuf, 0x100);
     InsertItem0("aaa");
     InsertItem0("bbbbb");
     InsertItem0("cccccccccc");
@@ -22,6 +22,11 @@ int main(int argc, char* argv[])
 
     InsertItem0("ZZZZZZZZZZ");
     InsertItem0("gggggggggggggggggggggggggggggggggggggggggggggg");
+
+
+    ModifyItemFromString("cccccccccc", "11111");
+    ModifyItemFromString("bbbbb", "22222222222222222222");
+
 
     return 0;
 }

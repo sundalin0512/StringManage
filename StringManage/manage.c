@@ -14,6 +14,8 @@
 //  位置大小对数量 = pEmptyList[0]
 //  位置 = pEmptyList[iIndex * 2 + 1]
 //  大小 = pEmptyList[iIndex * 2 + 2]
+
+#define MAXSTRLEN 256
 char *pStrBuf;
 int *pSize;
 int *pFillList;
@@ -220,19 +222,29 @@ int InsertEmptyPlace(int iEmptyPlaceIndex, char *szStr, int iSize, int iIndex)
     int iUsedSize = (iSize + sizeof(int) - 1) / sizeof(int) * sizeof(int);
     int iRemainSize = pEmptyList[iEmptyPlaceIndex * 2 + 2] - iUsedSize;
     int iRemainPosition = iPosition + iUsedSize;
+    int iRet = 0;
     memcpy_s(&pStrBuf[iPosition], iSize, szStr, iSize);
     ModifyEmptyList(iEmptyPlaceIndex, iRemainPosition, iRemainSize);
-    InsertFillList(iIndex, iPosition, iSize);
+    iRet = InsertFillList(iIndex, iPosition, iSize);
 
-    return 0;
+    return iRet;
 }
 
 int AttachToTail(int iIndex, char *szStr, int iSize)
 {
     int iPosition = 0;
+    int iRet = 0;
     iPosition = (int)pFillList - (int)pSize;
-    AdjustArrayTail(iSize);
-    InsertFillList(iIndex, iPosition, iSize);
+    iRet = AdjustArrayTail(iSize);
+    if (iRet != 0)
+    {
+        return iRet;
+    }
+    iRet = InsertFillList(iIndex, iPosition, iSize);
+    if (iRet != 0)
+    {
+        return iRet;
+    }
     memcpy_s(pStrBuf + iPosition, iSize, szStr, iSize);
     return 0;
 }
@@ -245,7 +257,7 @@ int InsertItem0(char *szStr)
 int InsertItem(char *szStr, int iIndex)
 {
     int iEmptyPlaceIndex = 0;
-    int iSize = strnlen(szStr, 256) + 1;
+    int iSize = strnlen(szStr, MAXSTRLEN) + 1;
     if (iIndex == -1)
     {
         iIndex = pFillList[0];
@@ -254,22 +266,28 @@ int InsertItem(char *szStr, int iIndex)
     if (iEmptyPlaceIndex == -1)
     {
 
-        AttachToTail(iIndex, szStr, iSize);
+        return AttachToTail(iIndex, szStr, iSize);
     }
     else
     {
-        InsertEmptyPlace(iEmptyPlaceIndex, szStr, iSize, iIndex);
+        return InsertEmptyPlace(iEmptyPlaceIndex, szStr, iSize, iIndex);
     }
 
+    return 0;
 }
 
 int DeleteItemFromIndex(int iItemIndex)
 {
+    int iRet = 0;
     if (iItemIndex < pFillList[0])
     {
         int iPosition = pFillList[2 * iItemIndex + 1];
         int iSize = pFillList[2 * iItemIndex + 2];
-        InsertEmptyList(iPosition, iSize);
+        iRet = InsertEmptyList(iPosition, iSize);
+        if (iRet != 0)
+        {
+            return iRet;
+        }
         return DeleteFillList(iItemIndex);
     }
     return -1;
@@ -284,3 +302,31 @@ int DeleteItemFromString(char *szStr)
     }
     return DeleteItemFromIndex(iItemIndex);
 }
+
+int ModifyItemFormIndex(int iIndex, char *szStr)
+{
+    DeleteItemFromIndex(iIndex);
+    return InsertItem(szStr, iIndex);
+}
+
+int ModifyItemFromString(char *szDest, char *szSource)
+{
+    int iItemIndex = FindItem(szDest);
+    if (iItemIndex == -1)
+    {
+        return -1;
+    }
+    return ModifyItemFormIndex(iItemIndex, szSource);
+}
+
+int SearchItemFromIndex(char * szStr, int iIndex)
+{
+    
+    return 0;
+}
+
+int SearchItemFromSubstr(char * szStr, int * iIndex, char * substr)
+{
+    return 0;
+}
+

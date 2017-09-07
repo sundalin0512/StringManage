@@ -9,3 +9,11 @@ int InsertItem(char *szStr, int iIndex);
 int DeleteItemFromIndex(int iItemIndex);
 
 int DeleteItemFromString(char *szStr);
+
+int ModifyItemFormIndex(int iIndex, char *szStr);
+
+int ModifyItemFromString(char *szDest, char *szSource);
+
+int SearchItemFromIndex(char *szStr, int iIndex);
+
+int SearchItemFromSubstr(char *szStr, int *iIndex, char *substr);
