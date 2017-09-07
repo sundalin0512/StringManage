@@ -17,3 +17,7 @@ int ModifyItemFromString(char *szDest, char *szSource);
 int SearchItemFromIndex(char *szStr, int iIndex);
 
 int SearchItemFromSubstr(char *szStr, int *iIndex, char *substr);
+
+int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount);
+
+

@@ -52,6 +52,38 @@ int FindEmptyPlace(int iSize)
     return -1;
 }
 
+// 0找不到，1找到
+int KMPSearch(char *szStr, char *szMatchStr)
+{
+    int iIndex = 0;
+    int  i = 0;
+    int j = 0;
+
+    for (i = 0; i < (int)strnlen(szStr, MAXSTRLEN) - (int)strnlen(szMatchStr, MAXSTRLEN) + 1; i++)
+    {
+        iIndex = i;
+        if (szStr[i] == szMatchStr[j])
+        {
+            do
+            {
+                i++;
+                j++;
+            } while (j != strnlen(szMatchStr, MAXSTRLEN) && szStr[i] == szMatchStr[j]);
+            if (j == strnlen(szMatchStr, MAXSTRLEN))
+            {
+                return 1;
+            }
+            else
+            {
+                i = iIndex + 1;
+                j = 0;
+            }
+        }
+    }
+
+    return 0;
+}
+
 // 返回 iPosition后的空节点的下标
 int FindEmptyListInsertIndex(int iPosition)
 {
@@ -319,14 +351,61 @@ int ModifyItemFromString(char *szDest, char *szSource)
     return ModifyItemFormIndex(iItemIndex, szSource);
 }
 
+
 int SearchItemFromIndex(char * szStr, int iIndex)
 {
-    
+    if (iIndex >= pFillList[0])
+    {
+        return -1;
+    }
+    char *str = &pStrBuf[pFillList[iIndex * 2 + 1]];
+    int iSize = pFillList[iIndex * 2 + 2];
+    memcpy_s(szStr, iSize, str, iSize);
+
     return 0;
 }
 
 int SearchItemFromSubstr(char * szStr, int * iIndex, char * substr)
 {
+    int i = 0;
+    for (i = 0; i < pFillList[0]; i++)
+    {
+        if (KMPSearch(&pStrBuf[pFillList[i * 2 + 1]], substr))
+        {
+            char *str = &pStrBuf[pFillList[i * 2 + 1]];
+            int iSize = pFillList[i * 2 + 2];
+            memcpy_s(szStr, iSize, str, iSize);
+            *iIndex = i;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount)
+{
+    int i = 0;
+    int j = 0;
+    *iCount = 0;
+    memset(aryLittleChar, 0, 26 * sizeof(int));
+    memset(aryBigChar, 0, 26 * sizeof(int));
+    for (i = 0; i < pFillList[0]; i++)
+    {
+        char *szTmp = &pStrBuf[pFillList[i * 2 + 1]];
+        for (j = 0; j < strnlen(szTmp, MAXSTRLEN); j++)
+        {
+            if (szTmp[j] >= 'a' && szTmp[j] <= 'z')
+            {
+                aryLittleChar[szTmp[j] - 'a']++;
+            }
+            else if (szTmp[j] >= 'A' && szTmp[j] <= 'Z')
+            {
+                aryBigChar[szTmp[j] - 'a']++;
+            }
+            (*iCount)++;
+        }
+    }
+
     return 0;
 }
 
