@@ -4,10 +4,10 @@
 #include "manage.h"
 
 int main()
-{ 
+{
     char szBuf[0x10000];
-    char szTmp[256];
-    int iIndex = 0;
+    char **szTmp = NULL;
+    int *iIndex = NULL;
     int aryLittleChar[26];
     int aryBigChar[26];
     int iCount = 0;
@@ -33,8 +33,9 @@ int main()
     ModifyItemFromString("cccccccccc", "11111");
     ModifyItemFromString("bbbbb", "22222222222222222222");
     InsertItem0("aassxxzz99887766wwqq");
+    InsertItem0("aasdasdzz99887766wwqq");
 
-    SearchItemFromSubstr(szTmp, &iIndex, "99887766");
+    SearchItemFromSubstr(&szTmp, &iIndex, &iCount, "99887766");
 
     CountCharacters(aryLittleChar, aryBigChar, &iCount);
 

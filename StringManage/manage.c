@@ -121,7 +121,7 @@ int TryCombineEmptyList(int iIndex)
     }
     else if (iIndex != 0)
     {
-        if (pEmptyList[iIndex * 2 -1] + pEmptyList[iIndex * 2] == pEmptyList[iIndex * 2 + 1])
+        if (pEmptyList[iIndex * 2 - 1] + pEmptyList[iIndex * 2] == pEmptyList[iIndex * 2 + 1])
         {
             int iMoveOffset = 2 * sizeof(int*);
             int iCopyOffset = (iIndex * 2 + 1) * sizeof(int);
@@ -131,7 +131,7 @@ int TryCombineEmptyList(int iIndex)
             pEmptyList[iIndex * 2] += pEmptyList[iIndex * 2 + 2];
             memmove_s(dest, iCount, src, iCount);
             pEmptyList[0]--;
-            
+
         }
     }
     return 0;
@@ -365,20 +365,26 @@ int SearchItemFromIndex(char * szStr, int iIndex)
     return 0;
 }
 
-int SearchItemFromSubstr(char * szStr, int * iIndex, char * substr)
+int SearchItemFromSubstr(char ***szStr, int **iIndex, int *iCount, char * substr)
 {
     int i = 0;
+    *iCount = 0;
+    *iIndex = (int*)calloc(pFillList[0], sizeof(int));
+    *szStr = (char**)calloc(pFillList[0], sizeof(char*));
     for (i = 0; i < pFillList[0]; i++)
     {
         if (KMPSearch(&pStrBuf[pFillList[i * 2 + 1]], substr))
         {
             char *str = &pStrBuf[pFillList[i * 2 + 1]];
             int iSize = pFillList[i * 2 + 2];
-            memcpy_s(szStr, iSize, str, iSize);
-            *iIndex = i;
-            return 0;
+            (*szStr)[*iCount] = (char*)calloc(iSize, sizeof(char));
+            memcpy_s((*szStr)[*iCount], iSize, str, iSize);
+            (*iIndex)[*iCount] = i;
+            (*iCount)++;
         }
     }
+    if (*iCount > 0)
+        return 0;
     return -1;
 }
 
