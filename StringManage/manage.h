@@ -16,8 +16,10 @@ int ModifyItemFromString(char *szDest, char *szSource);
 
 int SearchItemFromIndex(char *szStr, int iIndex);
 
-int SearchItemFromSubstr(char *szStr, int *iIndex, int *iCount,char *substr);
+int SearchItemFromSubstr(char *szStr[10], int iIndex[10], int *iCount, char * substr);
+
+int SearchNext(char *szStr[10], int iIndex[10], int *iCount, char * substr, int iStartIndex);
 
 int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount);
 
-
+int Defragment();

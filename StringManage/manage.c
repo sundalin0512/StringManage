@@ -114,12 +114,13 @@ int TryCombineEmptyList(int iIndex)
             int *dest = (int*)((int)pEmptyList + iCopyOffset);
             int *src = (int*)((int)pEmptyList + iCopyOffset + iMoveOffset);
             int iCount = (pEmptyList[0] - iIndex - 1) * 2 * sizeof(int);
+            pEmptyList[iIndex * 2 + 2] += pEmptyList[iIndex * 2 + 4];
             memmove_s(dest, iCount, src, iCount);
             pEmptyList[0]--;
-            pEmptyList[iIndex * 2 + 2] += pEmptyList[iIndex * 2 + 4];
+            
         }
     }
-    else if (iIndex != 0)
+    if (iIndex != 0)
     {
         if (pEmptyList[iIndex * 2 - 1] + pEmptyList[iIndex * 2] == pEmptyList[iIndex * 2 + 1])
         {
@@ -365,26 +366,56 @@ int SearchItemFromIndex(char * szStr, int iIndex)
     return 0;
 }
 
-int SearchItemFromSubstr(char ***szStr, int **iIndex, int *iCount, char * substr)
+
+int SearchItemFromSubstr(char *szStr[10], int iIndex[10], int *iCount, char * substr)
 {
     int i = 0;
     *iCount = 0;
-    *iIndex = (int*)calloc(pFillList[0], sizeof(int));
-    *szStr = (char**)calloc(pFillList[0], sizeof(char*));
     for (i = 0; i < pFillList[0]; i++)
     {
         if (KMPSearch(&pStrBuf[pFillList[i * 2 + 1]], substr))
         {
             char *str = &pStrBuf[pFillList[i * 2 + 1]];
             int iSize = pFillList[i * 2 + 2];
-            (*szStr)[*iCount] = (char*)calloc(iSize, sizeof(char));
-            memcpy_s((*szStr)[*iCount], iSize, str, iSize);
-            (*iIndex)[*iCount] = i;
+            szStr[*iCount] = str;
+            iIndex[*iCount] = i;
             (*iCount)++;
+            if (*iCount == 10)
+            {
+                break;
+            }
         }
     }
     if (*iCount > 0)
-        return 0;
+    {
+        return i;   //下次查找需要用到的index
+    }
+    return -1;
+}
+
+int SearchNext(char *szStr[10], int iIndex[10], int *iCount, char * substr, int iStartIndex)
+{
+    int i = 0;
+    *iCount = 0;
+    for (i = iStartIndex; i < pFillList[0]; i++)
+    {
+        if (KMPSearch(&pStrBuf[pFillList[i * 2 + 1]], substr))
+        {
+            char *str = &pStrBuf[pFillList[i * 2 + 1]];
+            int iSize = pFillList[i * 2 + 2];
+            szStr[*iCount] = str;
+            iIndex[*iCount] = i;
+            (*iCount)++;
+            if (*iCount == 10)
+            {
+                break;
+            }
+        }
+    }
+    if (*iCount > 0)
+    {
+        return i;   //下次查找需要用到的index
+    }
     return -1;
 }
 
@@ -412,6 +443,38 @@ int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount)
         }
     }
 
+    return 0;
+}
+
+int Defragment()
+{
+    int iPosition = 0;
+    int iOffset = 0;
+    if (pEmptyList[0] > 0)
+    {
+        int i = 0;
+        for (i = 0; i < pEmptyList[0]; i++)
+        {
+            iOffset += pEmptyList[i * 2 + 2];
+        }
+        do
+        {
+            int i = 0;
+            iPosition = pEmptyList[1] + pEmptyList[2];
+            for (i = 0; i < pFillList[0]; i++)
+            {
+                if (iPosition == pFillList[i * 2 + 1])
+                {
+                    DeleteItemFromIndex(i);
+                    InsertItem(&pStrBuf[iPosition], i);
+                    break;
+                }
+            }
+            if (i == pFillList[0])
+                break;
+        } while (1);
+        AdjustArrayTail(-iOffset);
+    }
     return 0;
 }
 
