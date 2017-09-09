@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "manage.h"
+#include  "view.h"
 
 int main(void)
 {
@@ -12,7 +13,13 @@ int main(void)
     int aryBigChar[26];
     int iCount = 0;
     int iSearchIndex = 0;
+    char *szMemoryInfo = NULL;
+    int iMemoryUse = 0;
+    char szStrTmp[MAXSTRLEN] = "";
     Initialize(szBuf, 0x10000);
+
+    ShowWelcome();
+ 
     InsertItem0("aaa");
     InsertItem0("bbbbb");
     InsertItem0("cccccccccc");
@@ -22,18 +29,18 @@ int main(void)
     InsertItem0("gggggggggggggggggggggggggggggggggggggggggggggg");
     InsertItem0("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 
-    DeleteItemFromString("eeeeeeeeeeeeeeeeeee");
-    DeleteItemFromString("fffffffffffffffffffffffffffffffff");
-    DeleteItemFromString("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    //DeleteItemFromString("eeeeeeeeeeeeeeeeeee");
+    //DeleteItemFromString("fffffffffffffffffffffffffffffffff");
+    //DeleteItemFromString("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 
 
     InsertItem0("ZZZZZZZZZZ");
-    DeleteItemFromIndex(0);
+    DeleteItemFromIndex(0, szStrTmp);
     InsertItem0("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
     Defragment();
 
-    ModifyItemFromString("cccccccccc", "11111");
-    ModifyItemFromString("bbbbb", "22222222222222222222");
+    //ModifyItemFromString("cccccccccc", "11111");
+    //ModifyItemFromString("bbbbb", "22222222222222222222");
     InsertItem0("aassxxzz99887766wwqq");
     InsertItem0("aasdasdzz99887766wwqq");
     InsertItem0("adasd99887766asdddaa");
@@ -61,5 +68,10 @@ int main(void)
 
     CountCharacters(aryLittleChar, aryBigChar, &iCount);
 
+    GetStorageInfo(&szMemoryInfo, &iMemoryUse);
+    DeleteItemFromIndex(0, szStrTmp);
+    DeleteItemFromIndex(0, szStrTmp);
+    DeleteItemFromIndex(0, szStrTmp);
+    MainFunction();
     return 0;
 }

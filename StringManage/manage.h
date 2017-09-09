@@ -1,12 +1,14 @@
 #pragma once
 
+#define MAXSTRLEN 256
+
 int Initialize(char *szBuf, int size);
 
 int InsertItem0(char *szStr);
 
 int InsertItem(char *szStr, int iIndex);
 
-int DeleteItemFromIndex(int iItemIndex);
+int DeleteItemFromIndex(int iItemIndex, char *szDeleteItem);
 
 int DeleteItemFromString(char *szStr);
 
@@ -23,3 +25,5 @@ int SearchNext(char *szStr[10], int iIndex[10], int *iCount, char * substr, int 
 int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount);
 
 int Defragment(void);
+
+int GetStorageInfo(char *szMemoryInfo[], int *iCount);

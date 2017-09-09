@@ -21,9 +21,15 @@
     <ClCompile Include="manage.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="view.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="manage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="view.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

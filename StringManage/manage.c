@@ -15,7 +15,7 @@
 //  位置 = pEmptyList[iIndex * 2 + 1]
 //  大小 = pEmptyList[iIndex * 2 + 2]
 
-#define MAXSTRLEN 256
+
 char *pStrBuf;
 int *pSize;
 int *pFillList;
@@ -117,7 +117,7 @@ int TryCombineEmptyList(int iIndex)
             pEmptyList[iIndex * 2 + 2] += pEmptyList[iIndex * 2 + 4];
             memmove_s(dest, iCount, src, iCount);
             pEmptyList[0]--;
-            
+
         }
     }
     if (iIndex != 0)
@@ -287,10 +287,15 @@ int InsertItem0(char *szStr)
     return InsertItem(szStr, -1);
 }
 
+// -1没有空间  -2非法ID
 int InsertItem(char *szStr, int iIndex)
 {
     int iEmptyPlaceIndex = 0;
     int iSize = strnlen(szStr, MAXSTRLEN) + 1;
+    if (iIndex > pFillList[0])
+    {
+        return -2;
+    }
     if (iIndex == -1)
     {
         iIndex = pFillList[0];
@@ -309,7 +314,7 @@ int InsertItem(char *szStr, int iIndex)
     return 0;
 }
 
-int DeleteItemFromIndex(int iItemIndex)
+int DeleteItemFromIndex(int iItemIndex, char *szDeleteItem)
 {
     int iRet = 0;
     if (iItemIndex < pFillList[0])
@@ -321,6 +326,7 @@ int DeleteItemFromIndex(int iItemIndex)
         {
             return iRet;
         }
+        strcpy_s(szDeleteItem, iSize, &pStrBuf[pFillList[iItemIndex * 2 + 1]], iSize);
         return DeleteFillList(iItemIndex);
     }
     return -1;
@@ -333,13 +339,22 @@ int DeleteItemFromString(char *szStr)
     {
         return -1;
     }
-    return DeleteItemFromIndex(iItemIndex);
+    return DeleteItemFromIndex(iItemIndex, szStr);
 }
 
 int ModifyItemFormIndex(int iIndex, char *szStr)
 {
-    DeleteItemFromIndex(iIndex);
-    return InsertItem(szStr, iIndex);
+    char szTemp[MAXSTRLEN] = "";
+    DeleteItemFromIndex(iIndex, szTemp);
+    if (InsertItem(szStr, iIndex) == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        InsertItem(szTemp, iIndex);
+        return -1;
+    }
 }
 
 int ModifyItemFromString(char *szDest, char *szSource)
@@ -366,7 +381,7 @@ int SearchItemFromIndex(char * szStr, int iIndex)
     return 0;
 }
 
-
+//返回找到的个数, -1表示未找到
 int SearchItemFromSubstr(char *szStr[10], int iIndex[10], int *iCount, char * substr)
 {
     int i = 0;
@@ -465,7 +480,8 @@ int Defragment(void)
             {
                 if (iPosition == pFillList[i * 2 + 1])
                 {
-                    DeleteItemFromIndex(i);
+                    char szTmp[MAXSTRLEN] = "";
+                    DeleteItemFromIndex(i, szTmp);
                     InsertItem(&pStrBuf[iPosition], i);
                     break;
                 }
@@ -479,3 +495,15 @@ int Defragment(void)
     return 0;
 }
 
+int GetStorageInfo(char *szMemoryInfo[], int *iCount)
+{
+    int i = 0;
+    *iCount = (int)pEmptyList + sizeof(int)*(2 * pEmptyList[0] + 1) - (int)pStrBuf;
+    *szMemoryInfo = (char*)calloc(*iCount + 1, sizeof(char));
+    memset(*szMemoryInfo, 'X', (*iCount + 1) * sizeof(char));
+    for (i = 0; i < pEmptyList[0]; i++)
+    {
+        memset(&(*szMemoryInfo)[pEmptyList[i * 2 + 1]], '0', pEmptyList[i * 2 + 2]);
+    }
+
+}
