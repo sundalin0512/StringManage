@@ -3,7 +3,7 @@
 
 #include "manage.h"
 
-int main()
+int main(void)
 {
     char szBuf[0x10000];
     char *szTmp[10] = { 0 };
@@ -56,8 +56,8 @@ int main()
     InsertItem0("adasd99887766asdddaa");
     InsertItem0("adasd99887766asdddaa");
 
-    iSearchIndex =  SearchItemFromSubstr(&szTmp, &iIndex, &iCount, "99887766");
-    SearchNext(&szTmp, &iIndex, &iCount, "99887766", iSearchIndex);
+    iSearchIndex =  SearchItemFromSubstr(szTmp, iIndex, &iCount, "99887766");
+    SearchNext(szTmp, iIndex, &iCount, "99887766", iSearchIndex);
 
     CountCharacters(aryLittleChar, aryBigChar, &iCount);
 

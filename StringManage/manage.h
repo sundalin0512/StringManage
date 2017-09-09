@@ -22,4 +22,4 @@ int SearchNext(char *szStr[10], int iIndex[10], int *iCount, char * substr, int 
 
 int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount);
 
-int Defragment();
+int Defragment(void);

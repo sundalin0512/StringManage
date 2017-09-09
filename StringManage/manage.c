@@ -446,7 +446,7 @@ int CountCharacters(int aryLittleChar[26], int aryBigChar[26], int *iCount)
     return 0;
 }
 
-int Defragment()
+int Defragment(void)
 {
     int iPosition = 0;
     int iOffset = 0;
@@ -474,6 +474,7 @@ int Defragment()
                 break;
         } while (1);
         AdjustArrayTail(-iOffset);
+        pEmptyList[0] = 0;
     }
     return 0;
 }
