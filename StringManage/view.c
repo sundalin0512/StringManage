@@ -21,10 +21,13 @@ void FormatString(char *szString)
 {
     int iSize = strnlen(szString, MAXSTRLEN);
     if (iSize == 0)
+    {
         return;
-    if (szString[iSize] == '\0')
-        return;
-    szString[iSize - 1] = '\0';
+    }
+    if(szString[iSize - 1] == '\n')
+    {
+        szString[iSize - 1] = '\0';
+    }
 }
 
 
@@ -365,7 +368,7 @@ int StorageInfoFunction()
     char *szMemoryInfo = NULL;
     int iMemoryUse = 0;
     GetStorageInfo(&szMemoryInfo, &iMemoryUse);
-    printf_s("共使用%d字节\r\n");
+    printf_s("共使用%d字节\r\n", iMemoryUse);
     printf_s("%s\r\n", szMemoryInfo);
     return 0;
 }
